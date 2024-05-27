@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +14,9 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware(['auth', 'verified']);
+Route::patch('/home', [HomeController::class, 'updatePassword'])->middleware(['auth', 'verified']);
+
+Route::resource('/admin/posts', AdminController::class)->except('show')->names('admin.posts')->middleware('Admin');
 
 Route::get('/', [PostController::class, 'index'])->name('index');
 Route::get('/categories/{category}', [PostController::class, 'postsByCategory'])->name('posts.byCategory');

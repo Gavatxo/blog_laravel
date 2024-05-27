@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Tag;
-use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -15,11 +13,12 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
     protected $with = [
         'category',
         'tags',
-     ]; 
- 
+    ];
 
     public function getRouteKeyName(): string
     {
@@ -32,7 +31,7 @@ class Post extends Model
             $query->where(fn (Builder $query) => $query
                 ->where('title', 'LIKE', '%' . $filters['search'] . '%')
                 ->orWhere('contenu', 'LIKE', '%' . $filters['search'] . '%')
-            ); 
+            );
         }
 
         if (isset($filters['category'])) {
@@ -47,6 +46,12 @@ class Post extends Model
             );
         }
     }
+
+    public function exists(): bool
+    {
+        return (bool) $this->id;
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
