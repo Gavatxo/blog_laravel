@@ -18,7 +18,7 @@ class EnsureUserIsAuthenticated
     {
 
         if(!Auth::check()){
-            return redirect()->route('register');
+            return redirect()->route('login');
         }
 
         return $next($request);

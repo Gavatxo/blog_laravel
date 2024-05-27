@@ -23,7 +23,7 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
  
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, (bool) $request->remember)) {
             $request->session()->regenerate();
  
             return redirect()->intended('home');
@@ -32,5 +32,16 @@ class LoginController extends Controller
         return back()->withErrors([
             'email' => 'Identifiants non valide',
         ])->onlyInput('email');
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+    
+        $request->session()->invalidate();
+    
+        $request->session()->regenerateToken();
+    
+        return redirect('/');
     }
 }
